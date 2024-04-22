@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Sentiment Analysis (Function)
+Script to obtain Sentiment Analysis Scores from news headlines, using SentimentIntensityAnalyzer (VADER Module)
 Author: Kimberley Ojeda Rojas
 
 """
 import pandas as pd
 import matplotlib.pyplot as plt
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from nltk.sentiment.vader import SentimentIntensityAnalyzer #Module for Sentiment Analysis (https://www.nltk.org/api/nltk.sentiment.vader.html)
 import seaborn as sns
 
+# Parameter for all graphs:
 plt.rcParams['figure.dpi'] = 300
 
-# Function to convert input from list of topics to dataframe file names:
+# Function to convert names from list of topics to dataframe file names:
 def dict_list(lst):
     if len(lst) == 0:
         raise ValueError("List is empty: You must choose a topic")
@@ -23,7 +24,7 @@ def dict_list(lst):
 
         for item in lst:
             key = item
-            value1 = item + '.pkl'
+            value1 = item + '.pkl' # Format of the pickle file name for each dataframe
             files_dict[key] = value1
             value2 = item.lower().replace(' ', '_')
             dfnames_dict[key] = value2
@@ -37,19 +38,19 @@ def sentiment_analysis(lst):
     mean_scores=[]
     
     for item in lst:
-        dict[1][item] = pd.read_pickle(dict[0][item])
+        dict[1][item] = pd.read_pickle(dict[0][item]) 
         
-        vader = SentimentIntensityAnalyzer()
-        new_words={"corruption":-1,"Rolex":-1,"investigation":-1,"watches":-1}
-        vader.lexicon.update(new_words)
+        vader = SentimentIntensityAnalyzer() # Start sentiment analysis tool
+        new_words={"corruption":-1,"Rolex":-1,"investigation":-1,"watches":-1} #Added words for context of news in Peru (Example: 'Rolex' is associated with a corruption case)
+        vader.lexicon.update(new_words) # Update sentiment analysis tool with new words.
         
-        scores = [vader.polarity_scores(head) for head in dict[1][item].Headline]
+        scores = [vader.polarity_scores(head) for head in dict[1][item].Headline] # Calculate scores for each headline
         
-        dict[1][item] = dict[1][item].sort_values(by='Date')
+        dict[1][item] = dict[1][item].sort_values(by='Date') # Sort dataframe by date
         dict[1][item]= (dict[1][item].join(pd.DataFrame(scores))).reset_index()
         dict[1][item]= dict[1][item].drop(columns='index')
         
-       # Plot for single topic
+       # Plot for single topic: Evolution of sentiment scores for each topic
         fig,ax = plt.subplots()
         colors = ['lightcoral' if value < 0 else 'lightseagreen' for value in (dict[1][item])["compound"]]
         dict[1][item].plot.bar(y='compound', figsize = (10, 5),ax=ax,legend=False, color=colors, width=1)
@@ -58,8 +59,8 @@ def sentiment_analysis(lst):
         ax.set_ylim(-1, 1)
         plt.suptitle(f"Evolution of Sentiment Scores from News of {item}")
         ax.set_xticks([0, len(dict[1][item].index) - 1])
-        last_day = dict[1][item]["Date"].iloc[-1].strftime('%m/%d/%Y') + "\n(Latest)"
-        ax.set_xticklabels([dict[1][item]["Date"].iloc[0].strftime('%m/%d/%Y'), last_day],rotation=0, fontsize = 9)      
+        last_day = dict[1][item]["Date"].iloc[-1].strftime('%m/%d/%Y') + "\n(Latest)" # Show the range of dates available for each topic
+        ax.set_xticklabels([dict[1][item]["Date"].iloc[0].strftime('%m/%d/%Y'), last_day],rotation=0, fontsize = 9) # Update date format (Since in Peru they use DD/MM/YYYY) 
         ax.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=True, labeltop=False, pad=20)
         ax.tick_params(axis='y', labelsize=9)
         
@@ -70,7 +71,7 @@ def sentiment_analysis(lst):
         # Create a list for the mean sentiment scores for each topic
         mean_scores.append([item,round((dict[1][item])["compound"].mean(),2)])
         
-    # Plot to compare mean scores
+    # Plot to compare mean scores for all topics within a list
     mean_scores = pd.DataFrame(mean_scores, columns=['Topic', 'Mean Score'])
     fig,ax = plt.subplots()
     colors = ['lightcoral' if value < 0 else 'lightseagreen' for value in mean_scores["Mean Score"]] # Change color depending on mean value
@@ -115,4 +116,4 @@ def sentiment_analysis(lst):
                    ha='center', 
                    fontsize=12,y=1.05);
     
-    return dataset_topics, mean_scores
+    return dataset_topics, mean_scores # The funcion will return an aggregated dataframe for all topics inside list
