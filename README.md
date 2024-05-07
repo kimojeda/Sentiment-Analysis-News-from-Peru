@@ -1,5 +1,5 @@
 # Sentiment-Analysis-News-from-Peru
-Using NPL for sentiment analysis of news obtained through web scraping technique.
+Using NLP for sentiment analysis of news obtained through web scraping technique.
 
 This is a project that is composed in three main sections:
 
