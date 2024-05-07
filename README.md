@@ -38,7 +38,11 @@ Moreover, the code to show the charts for the selected topics is in the file "Se
 From the demo files, we conclude that:
 
 * Focusing only in the average mean score could lead to a biased conclusion on a topic's perception. In the case of "Dina Boluarte" and "United States", their mean scores are close to zero, but these results are not enough to conclude that the headlines perception is neutral, as they could also mean that the positive and negative scores are cancelling each other out.
+  
+  ![Average Scores](https://github.com/kimojeda/Sentiment-Analysis-News-from-Peru/blob/main/Sentiment%20Mean%20Score.png)
 
 * A more complete approach is taking into acount the distribution of scores across our analysis. For the example of "Dina Boluarte" and "United States", we can conclude that the headlines perception is more polarized, given that their headlines have both positive and negative perceptions.
+
+  ![Scores Distribuion](https://github.com/kimojeda/Sentiment-Analysis-News-from-Peru/blob/main/Sentiment%20Score%20Distribution.png)
 
 * The results of the sentiment analysis can change over time, as this analysis is based on a dataset of news that will be updated by the newspaper.
